@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Snake</title>
+    <script>
+        window.onload = function() {
+            /* Canvas */
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = document.body.clientWidth * devicePixelRatio;
+            canvas.height = canvas.width / 2;
+            canvas.style.width = '100%';
+
+            /* User Inputs */
+            var l = false;
+            var r = true;
+            var u = false;
+            var d = false;
+            var inputs = [];
+
+            /* Keyboard Event Filter */
+            window.addEventListener('keydown', function(e) {
+                switch(e.keyCode) {
+                    case 37:
+                    case 38:
+                    case 39:
+                    case 40:
+                        inputs.push(e.keyCode);
+                        e.preventDefault();
+                        break;                        
+                    case 70:
+                        aps = Math.min(aps+5,500);
+                        threshold = 1000 / aps;
+                        console.log(aps);
+                        e.preventDefault();
+                        break;
+                    case 83:
+                        aps = Math.max(aps-5,0);
+                        threshold = 1000 / aps;
+                        console.log(aps);
+                        e.preventDefault();
+                        break;
+                }
+            });
+
+            /* Cell Possibilities */
+            var fruit = 0xFFFF;
+            var blank = 0xFFFF-1;
+
+            /* Grid */
+            var width = 100;
+            var height = 50;
+            var cell = (canvas.width / width)|0;
+            var grid = new Uint16Array(new ArrayBuffer(2*width*height));
+
+            /* Zero the Grid */
+            for (var i = 0; i < grid.length; i++)
+                grid[i] = blank;
+
+            /* Head and Tail Pointers */
+            var tail = grid.length / 2;
+            var head = tail + 4;
+
+            /* Initial Snake (5 long, center-left) */
+            for (var i = tail; i <= head; i++)
+                grid[i] = i - tail;
+
+            /* Render colors */
+            var fruitColor = 'red';
+            var snakeColor = 'black';
+            var blankColor = 'lightblue';
+
+            /* Render Functions  */
+            function drawHead() {
+                ctx.fillStyle = snakeColor;
+                ctx.fillRect((head%width)*cell,((head/width)|0)*cell,cell,cell);
+                return;
+            }
+
+            function eraseTail() {
+                ctx.fillStyle = blankColor;
+                ctx.fillRect((tail%width)*cell,((tail/width)|0)*cell,cell,cell);
+                return;
+            }
+
+            function initialDraw() {
+                for (var i = 0; i < grid.length; i++) {
+                    if (grid[i] == fruit)
+                        ctx.fillStyle = fruitColor;
+                    else if (grid[i] == blank)
+                        ctx.fillStyle = blankColor;
+                    else
+                        ctx.fillStyle = snakeColor;
+                    ctx.fillRect((i%width)*cell,((i/width)|0)*cell,cell,cell);
+                }
+            }
+
+            /* Pointer Helpers */
+            function getLeft(ptr) {
+                return ptr == 0 ? width-1 : ((ptr-1)%width)+getDepth(ptr);
+            }
+
+            function getRight(ptr) {
+                return ((ptr+1)%width)+getDepth(ptr);
+            }
+
+            function getUp(ptr) {
+                return ptr < width ? grid.length-(width-ptr) : ptr - width;
+            }
+
+            function getDown(ptr) {
+                return ptr >= grid.length-width ? ptr%width : ptr + width;
+            }
+
+            function getDepth(ptr) {
+                return ((ptr/width)|0)*width;
+            }
+
+            /* Random Fruit Generator */
+            function generateFruit() {
+                var fruitPtr;
+                do {
+                    fruitPtr = (Math.random()*grid.length)|0;
+                } while(grid[fruitPtr] != blank)
+                grid[fruitPtr] = fruit;
+                ctx.fillStyle = fruitColor;
+                ctx.fillRect((fruitPtr%width)*cell,((fruitPtr/width)|0)*cell,cell,cell);
+            }
+
+            /* Loop Variables */
+            var aps = 30;
+            var threshold = 1000/aps;
+            var accumultr = 0;
+            var prevTime = 0;
+            var loopId = undefined;
+            var tailDelay = 5;
+            var tailThreshold = 0;
+
+
+            /* Game Loop */
+            function loop(curTime) {
+                loopId = requestAnimationFrame(loop);
+                accumultr += curTime - prevTime;                
+                while (accumultr >= (threshold)) {
+                    tailThreshold = Math.max(0,tailThreshold-1);
+                    processInputs();
+                    updateHead();
+                    updateTail();      
+                    accumultr -= threshold;
+                }
+                prevTime = curTime;
+            }
+
+            function processInputs() {
+                while (inputs.length > 0)
+                    if (isValid(inputs.pop()))
+                            break;
+                inputs.length = 0;
+            }
+
+            function isValid(move) {
+                switch (move) {                    
+                    case 37:
+                        if (r || l) return false;
+                        l = true;
+                        d = u = false;
+                        return true;                    
+                    case 38:
+                        if (d || u) return false;
+                        u = true;
+                        l = r = false;
+                        return true;                    
+                    case 39:
+                        if (l || r) return false;
+                        r = true;
+                        u = d = false;
+                        return true;                    
+                    case 40:
+                        if (u || d) return false;
+                        d = true;
+                        l = r = false;
+                        return true;
+                }
+            }
+
+            function updateHead() {
+                var next;
+                switch(true) {
+                    case l:
+                        next = getLeft(head);
+                        break;
+                    case r:
+                        next = getRight(head);
+                        break;
+                    case u:
+                        next = getUp(head);
+                        break;
+                    default:
+                        next = getDown(head);
+                        break;
+                }                    
+                
+                if (grid[next] < blank)
+                    cancelAnimationFrame(loopId);               
+                else {
+                    if (grid[next] == fruit) {
+                        tailThreshold += tailDelay;
+                        generateFruit();
+                    }
+                    grid[next] = (grid[head]+1)%blank;
+                    head = next;
+                    drawHead();
+                }
+            }
+
+            function updateTail() {
+                if (tailThreshold > 0)
+                    return;
+
+                eraseTail();
+
+                var target = grid[tail]+1;
+                var left, right, up, next;
+                if (grid[left = getLeft(tail)] == target)
+                    next = left;
+                else if (grid[right = getRight(tail)] == target)
+                    next = right;
+                else if (grid[up = getUp(tail)] == target)
+                    next = up;
+                else
+                    next = getDown(tail);
+
+                grid[tail] = blank;
+                tail = next;
+            }
+
+            // Run
+            initialDraw();
+            generateFruit();
+            prevTime = window.performance.now();
+            loop(prevTime);
+
+        };
+    </script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+</body>
+</html>
