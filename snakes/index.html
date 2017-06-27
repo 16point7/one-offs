@@ -45,6 +45,30 @@
                 }
             });
 
+            /* Touchscreen Event Filter */
+            canvas.addEventListener('touchstart', function(e) {
+                if (e.targetTouches[0].clientX < canvas.clientWidth/2) {
+                    if (u)
+                        inputs.push(37);
+                    else if (l)
+                        inputs.push(40);
+                    else if (d)
+                        inputs.push(39);
+                    else
+                        inputs.push(38);
+                } else {
+                    if (u)
+                        inputs.push(39);
+                    else if (r)
+                        inputs.push(40);
+                    else if (d)
+                        inputs.push(37);
+                    else
+                        inputs.push(38);
+                }
+                e.preventDefault();
+            });
+
             /* Cell Possibilities */
             var fruit = 0xFFFF;
             var blank = 0xFFFF-1;
