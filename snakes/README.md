@@ -16,11 +16,11 @@ Clone the repository and run index.html in a web browser, or play [here](https:/
 * **slower:** KeyS
 
 ## Implementation Details
-The physical board is 100 x 50 and is backed by a a single integer array of length 5,000.
+The physical board is 100 x 50 and is backed by a single integer array of 5,000 elements.
 
-On every update cycle, the head pointer advances to the next cell based on user input and the tail pointer advances to the next cell by chasing the subsequent segment of the body.
+On every update cycle, the head pointer advances to the next cell based upon user input and the tail pointer advances to the next cell by chasing the subsequent segment of the body.
 
-A queue-like data structure can be used to store the coordinates of each body segment such that the tail pointer can simply find the next cell by dequeuing. However, the chosen implementation only uses the board array to represent all game entities.
+A queue-like data structure can be used to store the coordinates of each body segment, allowing the tail pointer to find the next cell by dequeuing. However, the following implementation only uses a single array to represent all game entities.
 
 The value of the snake's body increase sequentially from tail to head. As the head moves forward, the new head's value is greater than the previous by 1. The tail pointer knows where to go next by searching its immediate neighbors for the next sequential value.
 
@@ -33,7 +33,7 @@ Colission detection is simply:
 if (grid[next] < 0xFFFF-1)
     // collision!
 ```
-The method to advance the head value without using an <code>if</code> statement to handle the edge case ( <code>0xFFFF-2</code> is to loop back to <code>0</code> ) is:
+The method to advance the head value without using an <code>if</code> statement to handle the edge case where <code>0xFFFF-2</code> is to loop back to <code>0</code> is:
 ```javascript
 grid[next] = (grid[head]+1) % 0xFFFF-1;
 head = next;
