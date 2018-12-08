@@ -5,7 +5,7 @@ A lightweight implementation for the browser
 <img src="https://github.com/16point7/one-offs/blob/snakes/snakes/snakes.png?raw=true" width="200px">
 
 ## Installation
-Clone the repository and run index.html in a web browser, or play [here](https://cdn.rawgit.com/16point7/one-offs/snakes/snakes/index.html).
+Clone the repository and run index.html in a web browser, or play [here](https://s3.amazonaws.com/atang150-github-demos/one-offs/snakes/index.html).
 
 ## How to Play
 * **left:** ArrowLeft
