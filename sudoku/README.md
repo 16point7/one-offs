@@ -1,11 +1,5 @@
-# One-off Projects
+# Sudoku Solver
 
-## Snakes
-<img src="https://github.com/16point7/one-offs/blob/snakes/snakes/snakes.png?raw=true" width="200px">
-
-[visit](https://github.com/16point7/one-offs/tree/snakes/snakes)
-
-## Sudoku Solver
 ```javascript
 let board = [0,8,0,0,4,0,0,0,0,
              0,0,2,0,0,0,7,0,0,
@@ -17,6 +11,17 @@ let board = [0,8,0,0,4,0,0,0,0,
              0,0,9,0,0,0,8,0,0,
              0,0,0,0,2,0,0,7,0];
 Sudoku.solve(board);
-```
 
-[visit](https://github.com/16point7/one-offs/tree/sudoku/sudoku)
+console.log(board);
+/*
+   [9,8,6,7,4,2,1,5,3,
+    4,5,2,6,3,1,7,8,9,
+    1,3,7,9,8,5,4,6,2,
+    3,9,4,8,7,6,2,1,5,
+    8,6,5,2,1,4,3,9,7,
+    7,2,1,5,9,3,6,4,8,
+    5,7,3,4,6,8,9,2,1,
+    2,4,9,1,5,7,8,3,6,
+    6,1,8,3,2,9,5,7,4]
+ */
+```
