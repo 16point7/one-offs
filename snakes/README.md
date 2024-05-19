@@ -2,7 +2,7 @@
 A lightweight implementation for the browser
 
 ## Screenshot
-<img src="https://github.com/16point7/one-offs/blob/snakes/snakes/snakes.png?raw=true" width="200px">
+<img src="./snakes.png" width="200px">
 
 ## Installation
 Clone the repository and run index.html in a web browser, or play [here](https://s3.amazonaws.com/atang150-github-demos/one-offs/snakes/index.html).
@@ -97,6 +97,6 @@ On every update cycle, only the new head and erased tail are re-rendered.
 * **Browser:** Chromium v58.0.3029.110 (64-bit)
 * **Test duration:** ~ 60s
 
-<img src="https://github.com/16point7/one-offs/blob/snakes/snakes/snakes-performance1.png?raw=true" width="200px">
+<img src="./snakes-performance1.png" width="200px">
 
-<img src="https://github.com/16point7/one-offs/blob/snakes/snakes/snakes-performance2.png?raw=true" width="200px">
+<img src="./snakes-performance2.png" width="200px">
